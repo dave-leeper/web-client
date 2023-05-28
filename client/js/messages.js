@@ -9,15 +9,9 @@ class Messages {
     static ERROR_USER_MUST_LOG_IN = `ERROR_USER_MUST_LOG_IN`
     static SHOW_TAB = `SHOW_TAB`
     static HIDE_TAB = `HIDE_TAB`
+    static NEW_TEXT_DATA = `NEW_TEXT_DATA`
     static OPTION_SELECTED = `OPTION_SELECTED`
-    static NEWS_SELECTED = `NEWS_SELECTED`
-    static NEWS_EDITED =`NEWS_EDITED`
-    static PHOTO_SELECTED = `PHOTO_SELECTED`
-    static PHOTO_EDITED = `PHOTO_EDITED`
-    static TEXT_EDITED = `TEXT_EDITED`
     static USER_SELECTED = `USER_SELECTED`
     static USER_EDITED = `USER_EDITED`
-    static MODAL_OK = `MODAL_OK`
-    static MODAL_CANCEL = `MODAL_CANCEL`
     static FILE_SELECTED = `FILE_SELECTED`
 }

@@ -1,0 +1,24 @@
+<custom-component>
+    <script>
+        //# sourceURL=html/components/dialog.html
+        class Dialog extends Component {
+            afterMount() {
+                super.afterMount()
+                if (!this.props.okVisible) { this.OkElement.remove() }
+                if (!this.props.cancelVisible) { this.CancelElement.remove() }
+            }
+            show() { this.Element.show() }
+            showModal() {this.Element.showModal() }
+            hide() { this.Element.hide() }
+        }
+    </script>
+    <style>
+    </style>
+    <component-markup>
+        <dialog id="{id}">
+            <component-slot id="{id}Slot">DEFAULT CONTENT FOR {id}</component-slot>
+        </dialog>
+    </component-markup>
+    <test-script>
+    </test-script>
+</custom-component>

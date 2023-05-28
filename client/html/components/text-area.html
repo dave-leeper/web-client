@@ -49,53 +49,56 @@
 
                 this.vars.valid = false
                 while (this.ErrorElement.firstChild) { this.ErrorElement.removeChild(this.ErrorElement.firstChild) }
-                let testArray = [
-                    await test (`Test required`, `Ensure required field has a value.`, [async () => {
+                const requiredTest = {
+                    name: `Required`,
+                    description: `Ensure required field has a value.`,
+                    test: async () => {
                         let results = []
 
                         if (!this.props.required) { return results }
-                        assert(0 < element?.value?.length,                                 `Field '${this.props.label}' is required.`, results, true)
+                        assert(0 < this.TextFieldElement.value?.length,                             `Field '${this.props.label}' is required.`, results, true)
                         return results
-                    }]),                    
-                    await test (`Test minlength`, `Ensure field is no shorter than ${this.props.minlength}.`, [async () => {
+                    }
+                }
+                const minLengthTest = {
+                    name: `Min Length`,
+                    description: `Ensure field is no shorter than ${this.props.minlength}.`,
+                    test: async () => {
                         let results = []
 
-                        if (!this.TextAreaElement.value?.length && !this.props.required) { return results }
+                        if (!this.TextFieldElement.value?.length && !this.props.required) { return results }
                         if (!this.props.minlength) { return results }
-                        if (0 === element?.value?.length) { return results }
-                        assert(this.props.minlength <= element.value?.length,              `Field '${this.props.label}' has at least ${this.props.minlength} characters.`, results, true)
+                        assert(this.props.minlength <= this.TextFieldElement.value?.length,         `Field '${this.props.label}' has at least ${this.props.minlength} characters.`, results, true)
                         return results
-                    }]),
-                    await test (`Test maxlength`, `Ensure field is no longer than ${this.props.maxlength}.`, [async () => {
+                    }
+                }
+                const maxLengthTest = {
+                    name: `Max Length`,
+                    description: `Ensure field is no longer than ${this.props.maxlength}.`,
+                    test: async () => {
                         let results = []
 
                         if (!this.props.maxlength) { return results }
-                        assert(this.props.maxlength >= element.value?.length,              `Field '${this.props.label}' has no more than ${this.props.maxlength} characters.`, results, true)
+                        assert(this.props.maxlength >= this.TextFieldElement.value?.length,         `Field '${this.props.label}' has no more than ${this.props.maxlength} characters.`, results, true)
                         return results
-                    }])
-                ]
-
-                if (this.vars.customValidationTests && Array.isArray(this.vars.customValidationTests) && 0 < this.vars.customValidationTests.length) {
-                    let customTestArray = await test (`Custom tests`, `Ensure field passes custom tests.`, this.vars.customValidationTests )
-                    testArray.push(customTestArray)
+                    }
+                }
+                const testTextAreaSuite = {
+                    name: `TextArea`,
+                    description: `Ensure TextArea contains valid data.`,
+                    tests: [ requiredTest, minLengthTest, maxLengthTest ]
                 }
 
-                let results = await suite(`Validate field.`, `Ensure field meets all requirements.`, testArray)
+                if (this.vars.customValidationTests && Array.isArray(this.vars.customValidationTests) && 0 < this.vars.customValidationTests.length) {
+                    testArray.push(his.vars.customValidationTests)
+                }
+
+                let results = await suite(testTextAreaSuite)
+
                 this.vars.valid = (0 === results.failCount)
                 if (this.vars.valid) { 
-                    const newTextDataEvent = new CustomEvent(
-                        `newTextData`, 
-                        { 
-                            bubbles: true, 
-                            detail: { 
-                                text: () => this.vars.value, 
-                                component: this, 
-                                element: document.getElementById(this.id) 
-                            }
-                        }
-                    )
                     this.vars.value = element.value 
-                    element.dispatchEvent(newTextDataEvent)
+                    Queue.broadcast(Messages.NEW_TEXT_DATA, { text: this.vars.value, component: this, element: document.getElementById(this.id) })
                 }
                 if (showErrors) { this.showErrors(results) }
             }
